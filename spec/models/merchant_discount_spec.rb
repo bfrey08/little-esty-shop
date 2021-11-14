@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'merchant dashboard page' do
+RSpec.describe MerchantDiscount, type: :model do
   before :each do
     @merchant_1 = Merchant.create!(name: "Larry's Lucky Ladles")
 
@@ -36,63 +36,8 @@ RSpec.describe 'merchant dashboard page' do
     @transaction_6 = Transaction.create!(credit_card_number: "5235 2374 3233 2322", credit_card_expiration_date: "2023-03-23", result: 0, invoice_id: @invoice_2.id)
     @transaction_7 = Transaction.create!(credit_card_number: "5233 2322 3211 2300", credit_card_expiration_date: "2021-12-23", result: 1, invoice_id: @invoice_2.id)
   end
-  it 'shows the name of my merchant' do
-    merchant1 = Merchant.create!(name: "Larry's Lucky Ladles")
 
-    visit merchant_dashboard_index_path(merchant1)
-
-    expect(page).to have_content(merchant1.name)
+  describe "relationships" do
+    it {should belong_to :merchant}
+    it {should belong_to :bulk_discount}
   end
-
-  it 'shows link for merchant item index' do
-    merchant1 = Merchant.create!(name: "Larry's Lucky Ladles")
-
-    visit merchant_dashboard_index_path(merchant1)
-
-    expect(page).to have_link('Items')
-  end
-
-  it 'shows link for merchant invoices index' do
-    merchant1 = Merchant.create!(name: "Larry's Lucky Ladles")
-
-    visit merchant_dashboard_index_path(merchant1)
-
-    expect(page).to have_link('Invoices')
-  end
-
-  it 'shows favorite_customers' do
-    visit merchant_dashboard_index_path(@merchant_1)
-
-    expect(page).to have_content(@customer_1.first_name)
-    expect(page).to have_content(@customer_1.last_name)
-    expect(page).to have_content(@merchant_1.favorite_customers.first.transaction_count)
-  end
-
-  it 'shows names of items that are ready to ship' do
-    visit merchant_dashboard_index_path(@merchant_1)
-
-    expect(page).to have_content(@item_1.name)
-    expect(page).to have_content(@item_3.name)
-    expect(page).to have_content(@item_5.name)
-    expect(page).to have_content(@item_7.name)
-    expect(page).to_not have_content(@item_2.name)
-  end
-
-  it 'shows items by created date asc' do
-    visit merchant_dashboard_index_path(@merchant_1)
-
-    expect(@item_1.name).to appear_before(@item_3.name)
-  end
-
-  it 'shows invoice id link for each item' do
-    visit merchant_dashboard_index_path(@merchant_1)
-
-    expect(page).to have_link(@invoice_1.id)
-  end
-
-  it 'has links to view all discounts on bulk discount index page' do
-    visit merchant_dashboard_index_path(@merchant_1)
-
-    expect(page).to have_link('Discounts')
-  end
-end
