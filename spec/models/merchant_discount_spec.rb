@@ -35,9 +35,24 @@ RSpec.describe MerchantDiscount, type: :model do
     @transaction_5 = Transaction.create!(credit_card_number: "5773 4374 4373 2622", credit_card_expiration_date: "2027-11-24", result: 0, invoice_id: @invoice_2.id)
     @transaction_6 = Transaction.create!(credit_card_number: "5235 2374 3233 2322", credit_card_expiration_date: "2023-03-23", result: 0, invoice_id: @invoice_2.id)
     @transaction_7 = Transaction.create!(credit_card_number: "5233 2322 3211 2300", credit_card_expiration_date: "2021-12-23", result: 1, invoice_id: @invoice_2.id)
+
+    @bulk_discount_1 = BulkDiscount.create!(percentage: 0.20, threshold: 10)
+    @bulk_discount_2 = BulkDiscount.create!(percentage: 0.30, threshold: 15)
+    @bulk_discount_3 = BulkDiscount.create!(percentage: 0.15, threshold: 15)
+
+
+
+
+    @merchant_discounts = MerchantDiscount.create!(name: "Black Friday", bulk_discount_id: @bulk_discount_1.id, merchant_id: @merchant_1.id)
+    @merchant_discounts = MerchantDiscount.create!(name: "Black Friday", bulk_discount_id: @bulk_discount_2.id, merchant_id: @merchant_1.id)
+    @merchant_discounts = MerchantDiscount.create!(name: "Black Friday", bulk_discount_id: @bulk_discount_3.id, merchant_id: @merchant_1.id)
+
+
+
   end
 
   describe "relationships" do
     it {should belong_to :merchant}
     it {should belong_to :bulk_discount}
   end
+end

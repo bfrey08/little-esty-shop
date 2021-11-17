@@ -2,6 +2,8 @@ class Merchant < ApplicationRecord
   has_many :items
   has_many :invoice_items, through: :items
   has_many :invoices, through: :invoice_items
+  has_many :merchant_discounts
+  has_many :bulk_discounts, through: :merchant_discounts
 
   def top_5
     items.select('items.name, items.id, sum(invoice_items.quantity * invoice_items.unit_price) as item_revenue')

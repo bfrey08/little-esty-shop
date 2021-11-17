@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'merchant dashboard page' do
+RSpec.describe 'merchant discounts index page' do
   before :each do
     @merchant_1 = Merchant.create!(name: "Larry's Lucky Ladles")
 
@@ -35,11 +35,46 @@ RSpec.describe 'merchant dashboard page' do
     @transaction_5 = Transaction.create!(credit_card_number: "5773 4374 4373 2622", credit_card_expiration_date: "2027-11-24", result: 0, invoice_id: @invoice_2.id)
     @transaction_6 = Transaction.create!(credit_card_number: "5235 2374 3233 2322", credit_card_expiration_date: "2023-03-23", result: 0, invoice_id: @invoice_2.id)
     @transaction_7 = Transaction.create!(credit_card_number: "5233 2322 3211 2300", credit_card_expiration_date: "2021-12-23", result: 1, invoice_id: @invoice_2.id)
+
+    @bulk_discount_1 = BulkDiscount.create!(percentage: 0.20, threshold: 10)
+    @bulk_discount_2 = BulkDiscount.create!(percentage: 0.30, threshold: 15)
+    @bulk_discount_3 = BulkDiscount.create!(percentage: 0.15, threshold: 15)
+
+
+
+
+    @merchant_discount_1 = MerchantDiscount.create!(name: "Black Friday", bulk_discount_id: @bulk_discount_1.id, merchant_id: @merchant_1.id)
+    @merchant_discount_2 = MerchantDiscount.create!(name: "Black Friday", bulk_discount_id: @bulk_discount_2.id, merchant_id: @merchant_1.id)
+    @merchant_discount_3 = MerchantDiscount.create!(name: "Black Friday", bulk_discount_id: @bulk_discount_3.id, merchant_id: @merchant_1.id)
+
   end
-  it 'shows the bulk discount page' do
-    visit '/bulk_discounts'
-    expect(page).to have_content("Bulk Discounts")
+  it 'can display the merchant discount show page' do
+    visit merchant_discounts_path(@merchant_1)
+
+    expect(page).to have_content(@merchant_discount_1.name)
+    expect(page).to have_content(@bulk_discount_1.threshold)
+    expect(page).to have_content(@bulk_discount_1.percentage * 100)
+
+    expect(page).to have_link('view discount')
   end
-  it 'shows percentage discount and quantity thresholds' do
-    
-  end
+
+    it 'can delete a merchant_discount and return to the merchant discount index' do
+      visit merchant_discounts_path(@merchant_1)
+
+      click_link("delete #{@merchant_discount_1.id}")
+      expect(page).to have_no_content(@merchant_discount_1.id)
+
+
+    end
+
+    it 'can go to a create merchant discount page' do
+      visit merchant_discounts_path(@merchant_1)
+
+      click_link("new merchant discount")
+      expect(current_path).to eq("/merchants/#{@merchant_1.id}/discounts/new")
+
+
+    end
+
+
+end

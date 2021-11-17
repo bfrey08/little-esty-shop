@@ -1,0 +1,28 @@
+
+<style>
+table, th, td {
+  border:1px solid black;
+}
+</style>
+
+<h1>Merchant Discounts</h1>
+  <% @merchant_discounts.each do |merchant_discount| %>
+  <h3><%= merchant_discount.name if merchant_discount.name != nil%>
+  Percent off: <%= (merchant_discount.bulk_discount.percentage) * 100%>
+  Minimum quantity: <%= merchant_discount.bulk_discount.threshold %>
+  <%= link_to('view discount', "/merchants/#{merchant_discount.merchant_id}/discounts/#{merchant_discount.id}") %>
+  <%= link_to("delete #{merchant_discount.id}", "/merchants/#{merchant_discount.merchant_id}/discounts/#{merchant_discount.id}", method: :delete) %>
+
+  </h3>
+  <% end %>
+
+<h2>  <%= link_to('new merchant discount', new_merchant_discount_path(@merchant)) %>
+ </h2>
+
+<h2> Upcoming Holidays </h2>
+
+  <% @holidays[-3..-1].each do |holiday| %>
+    Holiday name:<%= holiday.name %>
+    Holiday date:<%= holiday.date %>
+    <br>
+  <% end %>

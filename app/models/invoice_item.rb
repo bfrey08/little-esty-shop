@@ -12,6 +12,11 @@ class InvoiceItem < ApplicationRecord
     revenue.sort_by{ |_, v| -v }.to_h.keys
   end
 
+  def self.invoice_revenue
+    InvoiceItem.(:invoice_id).where(invoice_id: id).sum('quantity * unit_price').find_by(invoice_id: 29)
+    #revenue.sort_by{ |_, v| -v }.to_h.keys
+  end
+
   def self.incomplete_invoices
 
     incomplete_invoices = InvoiceItem.select('invoice_items.*').where("status = 0 OR status = 1").distinct.order(invoice_id: :asc).pluck(:invoice_id)
