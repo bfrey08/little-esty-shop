@@ -1,0 +1,4 @@
+<h1><%= @merchant_discount.name %></h1>
+  <h3>Percent off: <%= @merchant_discount.bulk_discount.percentage * 100 %></h3>
+  <h3>Minimum quantity: <%= @merchant_discount.bulk_discount.threshold %></h3>
+  <h3><%= link_to("edit discount", "/merchants/#{@merchant.id}/discounts/#{@merchant_discount.id}/edit") %></h3>

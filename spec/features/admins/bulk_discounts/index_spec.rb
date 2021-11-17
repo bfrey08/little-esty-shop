@@ -35,64 +35,27 @@ RSpec.describe 'merchant dashboard page' do
     @transaction_5 = Transaction.create!(credit_card_number: "5773 4374 4373 2622", credit_card_expiration_date: "2027-11-24", result: 0, invoice_id: @invoice_2.id)
     @transaction_6 = Transaction.create!(credit_card_number: "5235 2374 3233 2322", credit_card_expiration_date: "2023-03-23", result: 0, invoice_id: @invoice_2.id)
     @transaction_7 = Transaction.create!(credit_card_number: "5233 2322 3211 2300", credit_card_expiration_date: "2021-12-23", result: 1, invoice_id: @invoice_2.id)
+
+    @bulk_discount_1 = BulkDiscount.create!(percentage: 0.20, threshold: 10)
+    @bulk_discount_2 = BulkDiscount.create!(percentage: 0.30, threshold: 15)
+    @bulk_discount_3 = BulkDiscount.create!(percentage: 0.15, threshold: 15)
+
+
+
+
+    @merchant_discount_1 = MerchantDiscount.create!(name: "Black Friday", bulk_discount_id: @bulk_discount_1.id, merchant_id: @merchant_1.id)
+    @merchant_discount_2 = MerchantDiscount.create!(name: "Black Friday", bulk_discount_id: @bulk_discount_2.id, merchant_id: @merchant_1.id)
+    @merchant_discount_3 = MerchantDiscount.create!(name: "Black Friday", bulk_discount_id: @bulk_discount_3.id, merchant_id: @merchant_1.id)
+
   end
-  it 'shows the name of my merchant' do
-    merchant1 = Merchant.create!(name: "Larry's Lucky Ladles")
-
-    visit merchant_dashboard_index_path(merchant1)
-
-    expect(page).to have_content(merchant1.name)
+  it 'shows the bulk discount page' do
+    visit '/admin/bulk_discounts'
+    expect(page).to have_content("Bulk Discounts")
   end
-
-  it 'shows link for merchant item index' do
-    merchant1 = Merchant.create!(name: "Larry's Lucky Ladles")
-
-    visit merchant_dashboard_index_path(merchant1)
-
-    expect(page).to have_link('Items')
-  end
-
-  it 'shows link for merchant invoices index' do
-    merchant1 = Merchant.create!(name: "Larry's Lucky Ladles")
-
-    visit merchant_dashboard_index_path(merchant1)
-
-    expect(page).to have_link('Invoices')
+  it 'shows percentage discount and quantity thresholds' do
+    visit '/admin/bulk_discounts'
+    expect(page).to have_content(@bulk_discount_1.percentage)
+    expect(page).to have_content(@bulk_discount_1.threshold)
   end
 
-  it 'shows favorite_customers' do
-    visit merchant_dashboard_index_path(@merchant_1)
-
-    expect(page).to have_content(@customer_1.first_name)
-    expect(page).to have_content(@customer_1.last_name)
-    expect(page).to have_content(@merchant_1.favorite_customers.first.transaction_count)
-  end
-
-  it 'shows names of items that are ready to ship' do
-    visit merchant_dashboard_index_path(@merchant_1)
-
-    expect(page).to have_content(@item_1.name)
-    expect(page).to have_content(@item_3.name)
-    expect(page).to have_content(@item_5.name)
-    expect(page).to have_content(@item_7.name)
-    expect(page).to_not have_content(@item_2.name)
-  end
-
-  it 'shows items by created date asc' do
-    visit merchant_dashboard_index_path(@merchant_1)
-
-    expect(@item_1.name).to appear_before(@item_3.name)
-  end
-
-  it 'shows invoice id link for each item' do
-    visit merchant_dashboard_index_path(@merchant_1)
-
-    expect(page).to have_link(@invoice_1.id)
-  end
-
-  it 'has links to view all discounts on bulk discount index page' do
-    visit merchant_dashboard_index_path(@merchant_1)
-
-    expect(page).to have_link('Discounts')
-  end
 end

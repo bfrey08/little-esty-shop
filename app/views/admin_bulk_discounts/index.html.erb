@@ -1,0 +1,7 @@
+<h1> All Bulk Discounts </h1>
+
+<% @bulk_discounts.each do |discount| %>
+<h3> 
+<%= discount.percentage %>
+<%= discount.threshold %> </h3>
+<% end  %>
